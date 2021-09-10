@@ -15,7 +15,7 @@
 #define INT_PIN PB1                   // PB1
 #define LED_PIN PB4                   // PB4
 
-#define I2C_SLAVE_ADDRESS 0x30 
+#define I2C_SLAVE_ADDRESS 0x30
 
 int i = 0;
 
@@ -26,11 +26,11 @@ void setup()
   TinyWireS.onRequest(requestEvent);
 
   //Interrupt pin for counter setup
-  cli();                            
+  cli();
   PCMSK |= (1 << INTERRUPT_PIN);    // Enable interrupt handler (ISR) for our chosen interrupt pin (PCINT1/PB1/pin 6)
   GIMSK |= (1 << PCIE);             // Enable PCINT interrupt in the general interrupt mask
-  pinMode(INT_PIN, INPUT_PULLUP);   
-  sei();                            
+  pinMode(INT_PIN, INPUT_PULLUP);
+  sei();
 
   // Turn on LED when program starts
   pinMode(LED_PIN, OUTPUT);
@@ -48,7 +48,7 @@ void requestEvent()
 {
   TinyWireS.write(i);
   //Reset accumulated counter after read
-  i=0;
+  i = 0;
 }
 
 //===================================
@@ -57,8 +57,10 @@ void requestEvent()
 ISR(PCINT_VECTOR)
 {
   //software debounce TBD
-  int current =millis();
+  int current = millis();
   //or possible simple delay to see if we can keep busy
+  digitalWrite(LED_PIN, LOW);
   delay(30);
+  digitalWrite(LED_PIN, HIGH);
   i++;
 }
