@@ -8,28 +8,33 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-//6 pins available, I use 4
+//6 pins available, I use 5
 //PB2 is SCL
 //PB0 is SDA
-#define INTERRUPT_PIN PCINT1          // PB1
-#define INT_PIN PB1                   // PB1
-#define LED_PIN PB4                   // PB4
+
+#define WIND_PIN PB5
+#define RAIN_PIN PB3
+#define LED_PIN PB4
 
 #define I2C_SLAVE_ADDRESS 0x30
 
 int i = 0;
 
+//===============================================
+// setup
+//===============================================
 void setup()
 {
   TinyWireS.begin(I2C_SLAVE_ADDRESS); // join i2c network
-  //TinyWireS.onReceive(receiveEvent); // not using this
+  TinyWireS.onReceive(receiveEvent);
   TinyWireS.onRequest(requestEvent);
 
   //Interrupt pin for counter setup
   cli();
-  PCMSK |= (1 << INTERRUPT_PIN);    // Enable interrupt handler (ISR) for our chosen interrupt pin (PCINT1/PB1/pin 6)
-  GIMSK |= (1 << PCIE);             // Enable PCINT interrupt in the general interrupt mask
-  pinMode(INT_PIN, INPUT_PULLUP);
+  PCMSK |= (1 << PCINT4) | (1 << PCINT5);   // Enable interrupt handler (ISR) for counter 0 and counter 1
+  GIMSK |= (1 << PCIE);                     // Enable PCINT interrupt in the general interrupt mask
+  pinMode(WIND_PIN, INPUT_PULLUP);
+  pinMode(RAIN_PIN, INPUT_PULLUP);
   sei();
 
   // Turn on LED when program starts
@@ -37,30 +42,56 @@ void setup()
   digitalWrite(LED_PIN, HIGH);
 }
 
+//===============================================
+// loop
+//===============================================
 void loop()
 {
   // This needs to be here
   TinyWireS_stop_check();
 }
 
-// Gets called when the ATtiny receives an i2c request
-void requestEvent()
+//===============================================
+// I2C Write command
+//===============================================
+void receiveEvent(void)
 {
-  TinyWireS.write(i);
-  //Reset accumulated counter after read
-  i = 0;
+
 }
 
-//===================================
+//===============================================
+// I2C Read command
+//===============================================
+void requestEvent(void)
+{
+
+}
+
+//===============================================
+// I2C Read command
+//===============================================
+void blinkLED(int count)
+{
+  int loop;
+  for (loop = 0; loop < count; loop++)
+  {
+    digitalWrite(LED_PIN, LOW);
+    delay(100);
+    digitalWrite(LED_PIN, HIGH);
+    delay(500);
+  }
+}
+
+//===============================================
 //ISR
-//===================================
+//===============================================
 ISR(PCINT_VECTOR)
 {
+  //determine interrupt pin mask that fired ISR
+
   //software debounce TBD
   int current = millis();
   //or possible simple delay to see if we can keep busy
-  digitalWrite(LED_PIN, LOW);
-  delay(30);
-  digitalWrite(LED_PIN, HIGH);
+  delay(10);
   i++;
 }
