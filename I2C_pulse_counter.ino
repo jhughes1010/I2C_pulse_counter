@@ -1,4 +1,6 @@
 // James Hughes -2021
+//Thomas Krebs
+
 //I2C pulse counter for wind cup/anemometer
 //Code not tested yet
 //v 0.1
@@ -29,6 +31,7 @@ void setup()
   TinyWireS.onReceive(receiveEvent);
   TinyWireS.onRequest(requestEvent);
 
+/*
   //Interrupt pin for counter setup
   cli();
   PCMSK |= (1 << PCINT4) | (1 << PCINT5);   // Enable interrupt handler (ISR) for counter 0 and counter 1
@@ -36,6 +39,7 @@ void setup()
   pinMode(WIND_PIN, INPUT_PULLUP);
   pinMode(RAIN_PIN, INPUT_PULLUP);
   sei();
+*/
 
   // Turn on LED when program starts
   pinMode(LED_PIN, OUTPUT);
@@ -49,6 +53,8 @@ void loop()
 {
   // This needs to be here
   TinyWireS_stop_check();
+  blinkLED(5);
+  delay(5000);
 }
 
 //===============================================
@@ -68,7 +74,7 @@ void requestEvent(void)
 }
 
 //===============================================
-// I2C Read command
+// Blink LED
 //===============================================
 void blinkLED(int count)
 {
