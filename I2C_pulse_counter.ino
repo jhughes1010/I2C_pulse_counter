@@ -9,6 +9,7 @@
 #include <TinyWireS.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "defines.h"
 
 //6 pins available, I use 5
 //PB2 is SCL
@@ -20,7 +21,7 @@
 
 #define I2C_SLAVE_ADDRESS 0x30
 
-int i = 0;
+uint8_t command = 0;
 
 //===============================================
 // setup
@@ -31,15 +32,15 @@ void setup()
   TinyWireS.onReceive(receiveEvent);
   TinyWireS.onRequest(requestEvent);
 
-/*
-  //Interrupt pin for counter setup
-  cli();
-  PCMSK |= (1 << PCINT4) | (1 << PCINT5);   // Enable interrupt handler (ISR) for counter 0 and counter 1
-  GIMSK |= (1 << PCIE);                     // Enable PCINT interrupt in the general interrupt mask
-  pinMode(WIND_PIN, INPUT_PULLUP);
-  pinMode(RAIN_PIN, INPUT_PULLUP);
-  sei();
-*/
+  /*
+    //Interrupt pin for counter setup
+    cli();
+    PCMSK |= (1 << PCINT4) | (1 << PCINT5);   // Enable interrupt handler (ISR) for counter 0 and counter 1
+    GIMSK |= (1 << PCIE);                     // Enable PCINT interrupt in the general interrupt mask
+    pinMode(WIND_PIN, INPUT_PULLUP);
+    pinMode(RAIN_PIN, INPUT_PULLUP);
+    sei();
+  */
 
   // Turn on LED when program starts
   pinMode(LED_PIN, OUTPUT);
@@ -62,6 +63,7 @@ void loop()
 //===============================================
 void receiveEvent(void)
 {
+  command = 0;
 
 }
 
@@ -99,5 +101,4 @@ ISR(PCINT_VECTOR)
   int current = millis();
   //or possible simple delay to see if we can keep busy
   delay(10);
-  i++;
 }
