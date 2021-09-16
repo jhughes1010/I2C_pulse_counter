@@ -54,8 +54,8 @@ void loop()
 {
   // This needs to be here
   TinyWireS_stop_check();
-  blinkLED(5);
-  delay(5000);
+  blinkLED(2);
+  delay(1000);
 }
 
 //===============================================
@@ -97,10 +97,10 @@ void blinkLED(int count)
   int loop;
   for (loop = 0; loop < count; loop++)
   {
-    digitalWrite(LED_PIN, LOW);
-    delay(100);
     digitalWrite(LED_PIN, HIGH);
-    delay(500);
+    delay(100);
+    digitalWrite(LED_PIN, LOW);
+    delay(400);
   }
 }
 
