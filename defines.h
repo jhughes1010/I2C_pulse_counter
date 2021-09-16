@@ -1,7 +1,9 @@
-#define RD_WINDCOUNT 0x10
-#define RESET_WINDCOUNT 0x11
+#define RD_WINDCOUNT        0x10
+#define RESET_WINDCOUNT     0x11
+#define RD_MINWINDPERIOD    0x12
+#define RESET_MINWINDPERIOD 0x13
 
 
 
-#define RD_RAINCOUNT 0x20
-#define RESET_RAINCOUNT 0x21
+#define RD_RAINCOUNT        0x20
+#define RESET_RAINCOUNT     0x21
