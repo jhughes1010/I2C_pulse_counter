@@ -64,7 +64,7 @@ void loop()
 void receiveEvent(void)
 {
   command = 0;
-
+  command = TinyWireS.read();
 }
 
 //===============================================
@@ -72,7 +72,21 @@ void receiveEvent(void)
 //===============================================
 void requestEvent(void)
 {
+  switch (command)
+  {
+    case RD_WINDCOUNT:
+      TinyWireS.write(0xaa);
+      TinyWireS.write(0xab);
+      break;
 
+    case RD_RAINCOUNT:
+      TinyWireS.write(0x55);
+      TinyWireS.write(0x56);
+      break;
+
+    default:
+      blinkLED(5);
+  }
 }
 
 //===============================================
