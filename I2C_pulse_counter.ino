@@ -21,7 +21,9 @@
 
 #define I2C_SLAVE_ADDRESS 0x30
 
-uint8_t command = 0;
+volatile uint8_t command = 0;
+volatile uint16_t windCount = 0x3c74;
+volatile uint16_t rainCount = 0xaa55;
 
 //===============================================
 // setup
@@ -75,13 +77,24 @@ void requestEvent(void)
   switch (command)
   {
     case RD_WINDCOUNT:
-      TinyWireS.write(0xaa);
-      TinyWireS.write(0xab);
+      TinyWireS.write(windCount >> 8 & 0xFF);
+      TinyWireS.write(windCount & 0xFF);
       break;
 
     case RD_RAINCOUNT:
-      TinyWireS.write(0x55);
-      TinyWireS.write(0x56);
+      TinyWireS.write(rainCount >> 8 & 0xFF);
+      TinyWireS.write(rainCount & 0xFF);
+      break;
+
+    case RESET_WINDCOUNT:
+      windCount = 0;
+      break;
+
+    case RESET_RAINCOUNT:
+      rainCount = 0;
+      break;
+
+    case RESET_MINWINDPERIOD:
       break;
 
     default:
