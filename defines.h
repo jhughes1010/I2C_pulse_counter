@@ -7,3 +7,8 @@
 
 #define RD_RAINCOUNT        0x20
 #define RESET_RAINCOUNT     0x21
+
+
+#define LED_ON              0x30
+#define LED_OFF             0x31
+#define LED_TOGGLE          0x32
