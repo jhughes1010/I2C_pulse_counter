@@ -16,14 +16,15 @@
 //PB0 is SDA
 
 #define WIND_PIN PB5
-#define RAIN_PIN PB3
-#define LED_PIN PB4
+#define RAIN_PIN PB4
+#define LED_PIN PB3
 
 #define I2C_SLAVE_ADDRESS 0x30
 
 volatile uint8_t command = 0;
 volatile uint16_t windCount = 0x3c74;
 volatile uint16_t rainCount = 0xaa55;
+volatile bool LEDState = LOW;
 
 //===============================================
 // setup
@@ -46,7 +47,7 @@ void setup()
 
   // Turn on LED when program starts
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, HIGH);
+  //jh digitalWrite(LED_PIN, LEDState);
 }
 
 //===============================================
@@ -56,8 +57,9 @@ void loop()
 {
   // This needs to be here
   TinyWireS_stop_check();
-  blinkLED(2);
+  digitalWrite(LED_PIN, LEDState);
   delay(1000);
+  LEDState = !LEDState;
 }
 
 //===============================================
@@ -67,6 +69,24 @@ void receiveEvent(void)
 {
   command = 0;
   command = TinyWireS.read();
+
+  switch (command)
+  {
+    case RESET_WINDCOUNT:
+      windCount = 0;
+      break;
+
+    case RESET_RAINCOUNT:
+      rainCount = 0;
+      break;
+
+    case RESET_MINWINDPERIOD:
+      break;
+
+    case LED_TOGGLE:
+      LEDState = !LEDState;
+      break;
+  }
 }
 
 //===============================================
@@ -84,17 +104,6 @@ void requestEvent(void)
     case RD_RAINCOUNT:
       TinyWireS.write(rainCount >> 8 & 0xFF);
       TinyWireS.write(rainCount & 0xFF);
-      break;
-
-    case RESET_WINDCOUNT:
-      windCount = 0;
-      break;
-
-    case RESET_RAINCOUNT:
-      rainCount = 0;
-      break;
-
-    case RESET_MINWINDPERIOD:
       break;
 
     default:
