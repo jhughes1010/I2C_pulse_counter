@@ -73,9 +73,10 @@ void blinkLED(int count)
   for (loop = 0; loop < count; loop++)
   {
     digitalWrite(LED_PIN, HIGH);
-    delay(100);
+    delay(200);
     digitalWrite(LED_PIN, LOW);
     delay(400);
+    digitalWrite(LED_PIN, HIGH);
   }
 }
 
@@ -92,15 +93,15 @@ ISR(PCINT_VECTOR)
   //delay(10);
   if ((currentTime - lastTime) > 50)
   {
-    if (!digitalRead(WIND_PIN))
+    if (digitalRead(WIND_PIN) == LOW)
     {
       windCount++;
     }
-    if (!digitalRead(RAIN_PIN))
+    if (digitalRead(RAIN_PIN) == LOW)
     {
       rainCount++;
     }
-    blinkLED(1);
+    blinkLED(2);
   }
   lastTime = currentTime;
 }

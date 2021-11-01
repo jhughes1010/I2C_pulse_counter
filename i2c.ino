@@ -33,12 +33,14 @@ void requestEvent(void)
   switch (command)
   {
     case RD_WINDCOUNT:
-      TinyWireS.write(windCount >> 8 & 0xFF);
+      windCount++;
+      TinyWireS.write((windCount >> 8) & 0xFF);
       TinyWireS.write(windCount & 0xFF);
       break;
 
     case RD_RAINCOUNT:
-      TinyWireS.write(rainCount >> 8 & 0xFF);
+      rainCount++;
+      TinyWireS.write((rainCount >> 8) & 0xFF);
       TinyWireS.write(rainCount & 0xFF);
       break;
 
